@@ -5,7 +5,7 @@ const Ticket = require('./models/Ticket');
 
 const app = express();
 app.use(express.json());
-
+/*
 const agenda = new Agenda({db: {address: 'mongodb://localhost:27017/zomentum', collection: "tickets"}});
 
 agenda.define('set expired and delete', async job => {
@@ -24,13 +24,15 @@ agenda.define('set expired and delete', async job => {
     // console.log("Yahooo")
     await agenda.start();
     await agenda.every('2 hours', 'set expired and delete');
-})();
+})();*/
 
+// Books a ticket.
 app.post('/bookticket', async (req, res) => {
     let timmings = req.body.timmings;
     let mobileNumber = req.body.mobileNumber;
     let name = req.body.name;
 
+    //Checks if 20 tickets are already booked.
     let flag = await Ticket.isBooked(timmings);
     if(flag){
         try{
@@ -44,6 +46,7 @@ app.post('/bookticket', async (req, res) => {
     }
 });
 
+// Updates the ticket timmings by id.
 app.patch('/updateticket/:id', async (req, res) => {
     let id = req.params.id;
     let newTimmings = req.body.timmings;
@@ -55,6 +58,7 @@ app.patch('/updateticket/:id', async (req, res) => {
     }
 });
 
+// Lists all tickets at the specified time.
 app.get('/alltickets/:time', async (req, res) => {
     let timmings = req.params.time;
     try{
@@ -69,6 +73,7 @@ app.get('/alltickets/:time', async (req, res) => {
     }
 });
 
+// Deletes the ticket with the specified id.
 app.delete('/deleteticket/:id', async (req, res) => {
     let id = req.params.id;
     try{
@@ -79,6 +84,7 @@ app.delete('/deleteticket/:id', async (req, res) => {
     }
 });
 
+// Get user details by ticket id.
 app.get('/userdetails/:id', async (req,res) => {
     let ticketId = req.params.id;
     try{
@@ -99,3 +105,5 @@ let port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 });
+process.removeAllListeners('warning');
+module.exports = app;

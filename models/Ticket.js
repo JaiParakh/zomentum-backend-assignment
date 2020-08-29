@@ -19,6 +19,7 @@ const TicketSchema = new Schema({
     }
 });
 
+// Ensures that duplicate tickets are not added.
 TicketSchema.index({mobileNumber: 1, startTime: 1}, {unique: true});
 
 module.exports = Ticket = mongoose.model('Ticket', TicketSchema);
