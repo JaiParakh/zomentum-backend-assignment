@@ -9,6 +9,7 @@
   "author": "Jai Parakh",
   "license": "ISC",
   "dependencies": {
+    "agenda": "^3.1.0",
     "express": "^4.17.1",
     "mongoose": "^5.10.2"
   }

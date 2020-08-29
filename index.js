@@ -1,9 +1,30 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const Agenda = require('agenda');
 const Ticket = require('./models/Ticket');
 
 const app = express();
 app.use(express.json());
+
+const agenda = new Agenda({db: {address: 'mongodb://localhost:27017/zomentum', collection: "tickets"}});
+
+agenda.define('set expired and delete', async job => {
+    try{
+        let expiredTickets = await Ticket.setExpired();
+        console.log(`Number of tickets expired: ${expiredTickets.nModified}`);
+
+        let deletedTickets = await Ticket.deleteExpired();
+        console.log(`Number of tickets deleted: ${deletedTickets.deletedCount}`);
+    }catch(err){
+        console.log(err);
+    }
+});
+
+(async function(){
+    // console.log("Yahooo")
+    await agenda.start();
+    await agenda.every('2 hours', 'set expired and delete');
+})();
 
 app.post('/bookticket', async (req, res) => {
     let timmings = req.body.timmings;

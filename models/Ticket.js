@@ -13,10 +13,13 @@ const TicketSchema = new Schema({
     },
     expired: {
         type: Boolean
+    },
+    createdOn: {
+        type: String
     }
 });
 
-//mongoose.index({mobileNumber: 1, startTime: 1}, {unique: true});
+TicketSchema.index({mobileNumber: 1, startTime: 1}, {unique: true});
 
 module.exports = Ticket = mongoose.model('Ticket', TicketSchema);
 
@@ -35,7 +38,8 @@ module.exports.bookTicket = (mobileNumber, name, startTime) => {
         name,
         mobileNumber,
         startTime,
-        expired: false
+        expired: false,
+        createdOn: new Date()
     });
     return newTicket.save();
 }
@@ -46,4 +50,13 @@ module.exports.getUserDetailsFromTicket = (id) => {
 
 module.exports.getAllTickets = (time) => {
     return Ticket.find({ startTime: time })
+}
+
+module.exports.setExpired = () => {
+    let date = new Date().setHours(new Date().getHours() - 8);
+    return Ticket.updateMany({ startTime: { $lte: date }}, { $set: { expired: true }});
+}
+
+module.exports.deleteExpired = () => {
+    return Ticket.deleteMany({ expired: false});
 }
