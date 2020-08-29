@@ -16,7 +16,7 @@ const TicketSchema = new Schema({
     }
 });
 
-mongoose.index({mobileNumber: 1, startTime: 1}, {unique: true});
+//mongoose.index({mobileNumber: 1, startTime: 1}, {unique: true});
 
 module.exports = Ticket = mongoose.model('Ticket', TicketSchema);
 

@@ -34,8 +34,8 @@ app.patch('/updateticket/:id', async (req, res) => {
     }
 });
 
-app.get('/alltickets', async (req, res) => {
-    let timmings = req.body.timmings;
+app.get('/alltickets/:time', async (req, res) => {
+    let timmings = req.params.time;
     try{
         let tickets = await Ticket.getAllTickets(timmings);
         if(tickets === null || tickets.length === 0){
@@ -73,6 +73,7 @@ app.get('/userdetails/:id', async (req,res) => {
     }
 })
 
+mongoose.connect('mongodb://localhost:27017/zomentum');
 let port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
