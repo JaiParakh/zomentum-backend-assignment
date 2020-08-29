@@ -5,9 +5,10 @@ const Ticket = require('./models/Ticket');
 
 const app = express();
 app.use(express.json());
-/*
+
 const agenda = new Agenda({db: {address: 'mongodb://localhost:27017/zomentum', collection: "tickets"}});
 
+// An job is defined below 
 agenda.define('set expired and delete', async job => {
     try{
         let expiredTickets = await Ticket.setExpired();
@@ -20,15 +21,15 @@ agenda.define('set expired and delete', async job => {
     }
 });
 
+// Runs every 2 hours to mark the expired flag and delete the expired tickets.
 (async function(){
-    // console.log("Yahooo")
     await agenda.start();
     await agenda.every('2 hours', 'set expired and delete');
-})();*/
+})();
 
 // Middleware function to validate mongo Id.
 function validateMongoId(req, res, next){
-    let isValid = mongoose.Types.ObjectId.isValid('5c0a7922c9d89830f4911426');
+    let isValid = mongoose.Types.ObjectId.isValid(req.params.id);
     if(!isValid){
         return res.status(400).json({ success: false, msg: "Invalid mongoose Id."});
     }
