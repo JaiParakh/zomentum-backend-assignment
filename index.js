@@ -26,6 +26,15 @@ agenda.define('set expired and delete', async job => {
     await agenda.every('2 hours', 'set expired and delete');
 })();*/
 
+// Middleware function to validate mongo Id.
+function validateMongoId(req, res, next){
+    let isValid = mongoose.Types.ObjectId.isValid('5c0a7922c9d89830f4911426');
+    if(!isValid){
+        return res.status(400).json({ success: false, msg: "Invalid mongoose Id."});
+    }
+    next();
+}
+
 // Books a ticket.
 app.post('/bookticket', async (req, res) => {
     let timmings = req.body.timmings;
@@ -47,11 +56,14 @@ app.post('/bookticket', async (req, res) => {
 });
 
 // Updates the ticket timmings by id.
-app.patch('/updateticket/:id', async (req, res) => {
+app.patch('/updateticket/:id', validateMongoId, async (req, res) => {
     let id = req.params.id;
     let newTimmings = req.body.timmings;
     try{
         let updatedTicket = await Ticket.findByIdAndUpdate(id, { startTime: newTimmings }, {new: true });
+        if(updatedTicket === null){
+            return res.status(404).json({ success: false, msg: "Ticket not found" });
+        }
         return res.status(200).json({ success: true, data: updatedTicket });
     }catch(err){
         return res.status(400).json({ success: false, msg: "Error Occured" });
@@ -74,7 +86,7 @@ app.get('/alltickets/:time', async (req, res) => {
 });
 
 // Deletes the ticket with the specified id.
-app.delete('/deleteticket/:id', async (req, res) => {
+app.delete('/deleteticket/:id', validateMongoId, async (req, res) => {
     let id = req.params.id;
     try{
         await Ticket.findByIdAndDelete(id);
@@ -85,7 +97,7 @@ app.delete('/deleteticket/:id', async (req, res) => {
 });
 
 // Get user details by ticket id.
-app.get('/userdetails/:id', async (req,res) => {
+app.get('/userdetails/:id', validateMongoId, async (req,res) => {
     let ticketId = req.params.id;
     try{
         let data = await Ticket.getUserDetailsFromTicket(ticketId);
@@ -101,9 +113,10 @@ app.get('/userdetails/:id', async (req,res) => {
 })
 
 mongoose.connect('mongodb://localhost:27017/zomentum');
+
 let port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 });
-process.removeAllListeners('warning');
+
 module.exports = app;

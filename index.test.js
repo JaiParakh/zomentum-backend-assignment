@@ -53,6 +53,24 @@ describe('Route: /updateticket      (Type: PATCH)', () => {
             done();
         });
     });
+
+    it('Should throw error as ticket is not in the db.', (done) => {
+        request(app).patch('/updateticket/5f4a1c9fed03721820e37f67').send({timmings: "Sat Aug 29 2020 21:13:18 GMT+0530 (India Standard Time)"}).expect(404).end((err, res) => {
+            if(err){
+                return done(err);
+            }
+            done();
+        });
+    });
+
+    it('Should throw an error as passed id is invalid', (done) => {
+        request(app).patch('/updateticket/5721820e37f67').send({timmings: "Sat Aug 29 2020 21:13:18 GMT+0530 (India Standard Time)"}).expect(400).end((err, res) => {
+            if(err){
+                return done(err);
+            }
+            done();
+        });
+    });
 });
 
 describe('Route: /alltickets        (Type: GET)', () => {
@@ -84,6 +102,15 @@ describe('Route: /deleteticket      (Type: DELETE)', () => {
             done();
         });
     });
+
+    it('Should throw an error as passed id is invalid', (done) => {
+        request(app).delete('/deleteticket/5721820e37f67').send({timmings: "Sat Aug 29 2020 21:13:18 GMT+0530 (India Standard Time)"}).expect(400).end((err, res) => {
+            if(err){
+                return done(err);
+            }
+            done();
+        });
+    });
 });
 
 describe('Route: /userdetails        (Type: GET)', () => {
@@ -98,6 +125,15 @@ describe('Route: /userdetails        (Type: GET)', () => {
 
     it('Should throw 404 as user is not in the collection.', (done) => {
         request(app).get('/userdetails/5f4a3b54dad27b29d072fdb7').expect(404).end((err, res) => {
+            if(err){
+                return done(err);
+            }
+            done();
+        });
+    });
+
+    it('Should throw an error as passed id is invalid', (done) => {
+        request(app).get('/userdetails/5721820e37f67').send({timmings: "Sat Aug 29 2020 21:13:18 GMT+0530 (India Standard Time)"}).expect(400).end((err, res) => {
             if(err){
                 return done(err);
             }
