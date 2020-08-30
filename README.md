@@ -1,6 +1,6 @@
 # Zomentum - Assignment
 
-- The repo contains three files which contains all the tasks assigned for backend development.
+- The repo contains three files which contain all the tasks assigned for backend development.
     - index.js          (main file)
     - index.test.js     (test file)
     - models/Ticket.js  (Ticket Schema)
